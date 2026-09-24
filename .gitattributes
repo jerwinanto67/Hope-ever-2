@@ -1,0 +1,6 @@
+# Never rewrite line endings in documents or images (small PDFs look like text to Git).
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.woff2 binary
