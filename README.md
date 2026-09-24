@@ -41,6 +41,7 @@ The footer contact details are in `js/site.js`. The contact page details are in 
 | `js/chapters.js` | Home-page programme chapters |
 | `js/tree-of-hope.js` | Tree of Hope, the home-page finale; grows when scrolled into view while the background orbs fade out |
 | `assets/images/` | Photos and logos |
+| `kit/` | **Hope FX**: the card menu, scroll chapters and scroll flight packaged for other sites (WordPress, Webflow, Wix). See `kit/README.md` |
 
 ## Adding a gallery photo
 

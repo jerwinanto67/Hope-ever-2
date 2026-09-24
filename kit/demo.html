@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hope FX demo</title>
+  <!-- Stand-in for a WordPress/Webflow theme: deliberately pushy global styles the kit must survive. -->
+  <style>
+    body { margin: 0; font: 17px/1.7 Georgia, serif; color: #222; background: #fff; }
+    header.theme { display: flex; justify-content: space-between; align-items: center; padding: 18px 32px; border-bottom: 1px solid #ddd; }
+    header.theme a { color: #0a5; }
+    .content { max-width: 760px; margin: 0 auto; padding: 48px 20px; }
+    h1, h2, h3 { font-family: Georgia, serif; color: #0a5; }
+    ul, ol { padding-left: 2em; margin: 1em 0; }
+    li { margin: .5em 0; list-style: square; }
+    button { background: #0a5; color: #fff; border: 0; padding: 12px 20px; border-radius: 30px; font-size: 18px; }
+    p { margin: 1.2em 0; }
+  </style>
+
+  <!-- ===== Paste-in part 1 (site-wide, <head>) ===== -->
+  <link rel="stylesheet" href="hope-fx.css">
+</head>
+<body>
+  <header class="theme">
+    <strong>My Organisation</strong>
+    <!-- Any link to #hfx-menu opens the card menu -->
+    <a href="#hfx-menu">Menu</a>
+  </header>
+
+  <div class="content">
+    <h1>A normal page</h1>
+    <p>This page stands in for a WordPress or Webflow site. The two sections below are page embeds; the card menu comes from site-wide code.</p>
+  </div>
+
+  <!-- ===== Paste-in part 2: scroll flight (page embed) ===== -->
+  <section data-hfx="flight" data-bg="#04110c">
+    <article data-href="../about.html"><span class="hfx-big">2012</span><h3>Rooted in Chennai</h3><p>Founded as a public charitable trust to support vulnerable communities.</p></article>
+    <article data-color="#6EE7B7" data-href="../programs.html#outreach"><span class="hfx-big">14</span><h3>Districts reached</h3><p>Livelihoods, child rights clubs and women's groups across Tamil Nadu.</p></article>
+    <article data-color="#F6D58E"><span class="hfx-big">2020</span><h3>Skills for health</h3><p>Healthcare training joins tailoring, handicrafts and IT for rural youth.</p></article>
+    <article data-color="#f7bcd3"><span class="hfx-big">Today</span><h3>Community-owned</h3><p>Evidence-led programmes designed with the people they serve.</p></article>
+  </section>
+
+  <div class="content">
+    <h2>Between sections</h2>
+    <p>Regular theme content keeps its own look.</p>
+    <ul><li>Theme list item one</li><li>Theme list item two</li></ul>
+    <button type="button">Theme button</button>
+  </div>
+
+  <!-- ===== Paste-in part 3: scroll chapters (page embed) ===== -->
+  <section data-hfx="chapters">
+    <ol>
+      <li data-word="Outreach" data-bg="#cfe9dc" data-c1="#0F6E56" data-c2="#9be3c4" data-shape="leaf" data-twist="2.4">
+        <h3>Community Outreach</h3><p>Health, sanitation, education and tribal welfare campaigns.</p><a href="../programs.html#outreach">Discover</a>
+      </li>
+      <li data-word="Livelihood" data-bg="#f5e2b5" data-c1="#C0711C" data-c2="#F6D58E" data-shape="disc" data-twist="1.1">
+        <h3>Livelihood Promotion</h3><p>Millets, organic farming, artisans and solar energy.</p><a href="../programs.html#livelihoods">Discover</a>
+      </li>
+      <li data-word="Skills" data-bg="#cdd6ff" data-c1="#3b5bdb" data-c2="#c3ceff" data-shape="crescent" data-twist="3.4">
+        <h3>Skill Development</h3><p>Tailoring, healthcare, IT and entrepreneurship training.</p><a href="../programs.html#skill">Discover</a>
+      </li>
+      <li data-word="Empower" data-bg="#f6d3e2" data-c1="#b5306b" data-c2="#f7bcd3" data-shape="wing" data-twist="1.8">
+        <h3>Women Empowerment</h3><p>Self-help groups, financial literacy and home-based livelihoods.</p><a href="../programs.html#empowerment">Discover</a>
+      </li>
+    </ol>
+  </section>
+
+  <div class="content"><h2>The end</h2><p>Footer content.</p></div>
+
+  <!-- ===== Paste-in part 1 continued (site-wide, before </body>) ===== -->
+  <script src="hope-fx.js"></script>
+  <script>
+    HopeFX.menu({
+      brand: 'My Organisation',
+      home: 'demo.html',
+      items: [
+        { title: 'Home', href: 'demo.html', image: '../assets/images/gallery/youth_skill_development.jpeg', line: 'Start here' },
+        { title: 'About', href: '../about.html', image: '../assets/images/gallery/Deepavali_celebration_2021_thiruvallur_district.jpeg', line: 'Who we are' },
+        { title: 'Projects', href: '../projects.html', image: '../assets/images/gallery/Agaramthen_millet_training_chengalpattu.jpeg', line: 'Work on the ground' },
+        { title: 'Gallery', href: '../gallery.html', image: '../assets/images/gallery/NIFT_Tharamani_hand_embroidary_team.jpeg', line: 'Field stories' },
+        { title: 'Contact', href: '../contact.html', image: '../assets/images/gallery/Donation_for_welfare_Covid.jpeg', line: 'Get in touch' },
+      ],
+      cta: { label: 'Donate', href: '../contact.html' },
+    });
+  </script>
+</body>
+</html>
