@@ -5,11 +5,8 @@
   const root = document.documentElement;
   const canvas = document.getElementById('scene');
   const fallback = () => root.classList.add('no-webgl');
-  const nav = navigator;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // ponytail: coarse heuristic for "low-end"; swap for a GPU benchmark if it misfires on real devices.
-  const low = nav.connection?.saveData || nav.deviceMemory <= 2 ||
-    (matchMedia('(pointer: coarse)').matches && (nav.hardwareConcurrency || 4) <= 4);
+  const low = LOW_END; // shared heuristic from site.js
   if (!canvas) return;
 
   let THREE, renderer;
@@ -145,7 +142,7 @@
     if (hovered) { tip.textContent = hovered.userData.label; tip.style.left = e.clientX + 'px'; tip.style.top = e.clientY + 'px'; }
   }, { passive: true });
   // Re-pick on click: on touch there's no hover, and the camera may have moved since the last pointermove.
-  addEventListener('click', e => { const o = pick(e); if (o) location.href = o.userData.href; });
+  addEventListener('click', e => { const o = pick(e); if (o) location.href = BASE + o.userData.href; });
 
   const clock = new THREE.Clock();
   const frame = () => {

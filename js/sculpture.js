@@ -3,9 +3,9 @@
 // Used by the home-page chapters (js/chapters.js) and by page heroes (canvas.hero-sculpt).
 window.makeSculpture = async (canvas, { mobileY = .5, desktopY = .2 } = {}) => {
   const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js');
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !LOW_END });
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, LOW_END ? 1 : 1.75));
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(32, 1, .1, 50);
   camera.position.set(0, .6, 11);
@@ -25,7 +25,7 @@ window.makeSculpture = async (canvas, { mobileY = .5, desktopY = .2 } = {}) => {
     (() => { const s = S().absarc(0, 0, 1, Math.PI * .15, Math.PI * 1.85, false); s.absarc(.45, 0, .75, Math.PI * 1.7, Math.PI * .3, true); return s; })(),
     S().moveTo(-1, -.4).quadraticCurveTo(-.7, .9, -.3, .3).quadraticCurveTo(0, 1.1, .3, .35).quadraticCurveTo(.7, 1, 1, .1).quadraticCurveTo(.4, -.9, -1, -.4),
   ];
-  const geos = shapes.map(s => new THREE.ExtrudeGeometry(s, { depth: .2, bevelEnabled: true, bevelThickness: .04, bevelSize: .05, bevelSegments: 2, curveSegments: 28 }).rotateX(-Math.PI / 2).center());
+  const geos = shapes.map(s => new THREE.ExtrudeGeometry(s, { depth: .2, bevelEnabled: true, bevelThickness: .04, bevelSize: .05, bevelSegments: LOW_END ? 1 : 2, curveSegments: LOW_END ? 10 : 28 }).rotateX(-Math.PI / 2).center());
 
   const N = 15, GAP = .3;
   const group = new THREE.Group();

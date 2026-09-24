@@ -1,6 +1,13 @@
 // Shared chrome (header, footer, donate dialog, audio) + page behaviours.
 // Injected from one place so the 7 pages don't each carry a copy of the nav/footer.
-const ASSETS = 'assets/images/';
+// Site root, derived from this script's own URL (<root>/js/site.js), so links and images
+// resolve from any page depth, including the 404 page served at nested paths.
+const BASE = new URL('..', document.currentScript.src).href;
+const ASSETS = BASE + 'assets/images/';
+// Shared by the 3D scripts to serve lighter scenes.
+// ponytail: coarse "low-end" heuristic; swap for a GPU benchmark if it misfires on real devices.
+const LOW_END = !!(navigator.connection?.saveData || navigator.deviceMemory <= 2 ||
+  (matchMedia('(pointer: coarse)').matches && (navigator.hardwareConcurrency || 4) <= 4));
 const W3F_KEY = '92aceb5c-0b7c-4af2-94e7-28e64e1dadab'; // Web3Forms public key for contact@hopeever.org (from the original site)
 // Razorpay Payment Button ID (public, starts with "pl_"): Razorpay Dashboard -> Payment Button -> Create.
 // Leave empty to keep the Donate dialog as an enquiry form only.
@@ -40,9 +47,9 @@ function injectChrome() {
   main.insertAdjacentHTML('beforebegin', `
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
-    <a class="brand" href="index.html"><img src="${ASSETS}common/circular_logo-removebg-preview.png" alt="" width="42" height="42"><span>Hope Ever<br>Foundation</span></a>
+    <a class="brand" href="${BASE}index.html"><img src="${ASSETS}common/circular_logo-removebg-preview.png" alt="" width="42" height="42"><span>Hope Ever<br>Foundation</span></a>
     <nav class="nav" id="nav" aria-label="Main">
-      ${NAV.map(([k, h, t]) => `<a href="${h}"${k === page ? ' aria-current="page"' : ''}>${t}</a>`).join('')}
+      ${NAV.map(([k, h, t]) => `<a href="${BASE}${h}"${k === page ? ' aria-current="page"' : ''}>${t}</a>`).join('')}
     </nav>
     <div class="head-actions">
       <button class="btn btn-solid" type="button" data-donate>Donate</button>
@@ -64,7 +71,7 @@ function injectChrome() {
         </section>
         <section>
           <h2>Explore</h2>
-          ${NAV.map(([, h, t]) => `<a href="${h}">${t}</a>`).join('')}
+          ${NAV.map(([, h, t]) => `<a href="${BASE}${h}">${t}</a>`).join('')}
         </section>
         <section>
           <h2>Contact</h2>
@@ -89,12 +96,12 @@ function injectChrome() {
 
   <dialog id="menu" class="menu" aria-label="Site menu">
     <div class="menu-top">
-      <a class="brand" href="index.html"><img src="${ASSETS}common/circular_logo-removebg-preview.png" alt="" width="42" height="42"><span>Hope Ever<br>Foundation</span></a>
+      <a class="brand" href="${BASE}index.html"><img src="${ASSETS}common/circular_logo-removebg-preview.png" alt="" width="42" height="42"><span>Hope Ever<br>Foundation</span></a>
       <form method="dialog"><button class="btn menu-close" aria-label="Close menu">&times;</button></form>
     </div>
     <div class="menu-rail">
       ${NAV.map(([k, h, t, img, line], i) => `
-      <a class="menu-card" href="${h}"${k === page ? ' aria-current="page"' : ''}>
+      <a class="menu-card" href="${BASE}${h}"${k === page ? ' aria-current="page"' : ''}>
         <span class="mc-poster"><img src="${ASSETS}gallery/${img}" alt="" loading="lazy"><span class="mc-num">0${i + 1}</span><span class="mc-title">${t}</span></span>
         <span class="mc-line">${line}</span>
       </a>`).join('')}
@@ -174,7 +181,16 @@ function initMenu() {
     setTimeout(() => { dlg.showModal(); layout(); cards[start].focus({ preventScroll: true }); }, reduce ? 0 : 380);
   };
   document.querySelector('.menu-btn').addEventListener('click', open);
-  dlg.addEventListener('close', () => { document.body.classList.remove('menu-zoom'); dlg.classList.remove('leaving'); });
+  const reset = () => {
+    document.body.classList.remove('menu-zoom');
+    dlg.classList.remove('leaving');
+    cards.forEach(c => c.classList.remove('go'));
+  };
+  dlg.addEventListener('close', reset);
+  // Back/forward cache can restore the page exactly as we left it (menu fading out, page
+  // zoomed away), which shows a blank screen. Reset directly: the dialog's close event
+  // can be deferred while the page is still hidden.
+  addEventListener('pageshow', e => { if (e.persisted) { if (dlg.open) dlg.close(); reset(); } });
 
   dlg.addEventListener('wheel', e => { e.preventDefault(); target = clamp(target + (e.deltaY + e.deltaX) / 420); loop(); snap(); }, { passive: false });
   dlg.addEventListener('keydown', e => {
