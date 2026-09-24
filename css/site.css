@@ -356,3 +356,7 @@ main { transform-origin: var(--zoom-origin, 50% 50vh); }
 .menu.leaving .menu-card.go .mc-poster { transform: scale(1.35) translateZ(120px) !important; transition: transform .5s cubic-bezier(.6, 0, .2, 1); }
 .menu.leaving { animation: menu-out .52s ease forwards; }
 @keyframes menu-out { 70% { opacity: 1; } to { opacity: 0; } }
+
+/* Razorpay block inside the donate dialog */
+.pay { margin: 1rem 0 1.5rem; padding: 18px; border: 1px solid var(--amber); border-radius: var(--radius); background: rgba(212, 135, 42, .08); }
+#donate h3 { font-family: var(--display); text-transform: uppercase; font-size: 1.4rem; margin-top: .5rem; }

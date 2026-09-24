@@ -2,6 +2,9 @@
 // Injected from one place so the 7 pages don't each carry a copy of the nav/footer.
 const ASSETS = 'assets/images/';
 const W3F_KEY = '92aceb5c-0b7c-4af2-94e7-28e64e1dadab'; // Web3Forms public key for contact@hopeever.org (from the original site)
+// Razorpay Payment Button ID (public, starts with "pl_"): Razorpay Dashboard -> Payment Button -> Create.
+// Leave empty to keep the Donate dialog as an enquiry form only.
+const RAZORPAY_BUTTON_ID = '';
 
 const NAV = [
   ['home', 'index.html', 'Home', 'youth_skill_development.jpeg', 'Hope for every community'],
@@ -106,7 +109,16 @@ function injectChrome() {
     <form method="dialog"><button class="btn x" aria-label="Close">&times;</button></form>
     <span class="eyebrow">Support our work</span>
     <h2 id="donate-title" class="h2">Donate to Hope Ever</h2>
-    <p class="muted">Hope Ever Foundation is recognised under Sections 12AA and 80G of the Income Tax Act. Send us your details and our team will share bank transfer information and an 80G receipt for your contribution.</p>
+    <p class="muted">Hope Ever Foundation is recognised under Sections 12AA and 80G of the Income Tax Act.</p>
+    ${RAZORPAY_BUTTON_ID ? `
+    <div class="pay">
+      <h3>Give online</h3>
+      <p class="muted">UPI, cards, net banking and wallets, processed securely by Razorpay. A payment receipt is emailed to you instantly.</p>
+      <form class="rzp-slot"></form>
+    </div>
+    <h3>Or send us a message</h3>
+    <p class="muted">For bank transfers, CSR giving or your 80G receipt, share your details and our team will get back to you.</p>` : `
+    <p class="muted">Send us your details and our team will share bank transfer information and an 80G receipt for your contribution.</p>`}
     ${formHTML('d-', 'Donation')}
   </dialog>`);
 }
@@ -201,8 +213,21 @@ function initMenu() {
 
 function initDonate() {
   const dlg = document.getElementById('donate');
+  let rzpLoaded = false;
   document.addEventListener('click', e => {
-    if (e.target.closest('[data-donate]')) dlg.showModal();
+    if (e.target.closest('[data-donate]')) {
+      // Razorpay's button script only runs when added as a real <script>, so inject it on first open.
+      const slot = dlg.querySelector('.rzp-slot');
+      if (slot && !rzpLoaded) {
+        rzpLoaded = true;
+        const sc = document.createElement('script');
+        sc.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+        sc.async = true;
+        sc.dataset.payment_button_id = RAZORPAY_BUTTON_ID;
+        slot.append(sc);
+      }
+      dlg.showModal();
+    }
     else if (e.target === dlg) dlg.close(); // click on backdrop
   });
 }
