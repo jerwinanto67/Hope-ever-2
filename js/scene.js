@@ -11,7 +11,7 @@
 
   let THREE, renderer;
   try {
-    THREE = await import('https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js');
+    THREE = await import('https://cdn.jsdelivr.net/npm/three@0.169.0/+esm');
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !low, powerPreference: 'high-performance' });
   } catch { return fallback(); }
 
@@ -128,7 +128,7 @@
   tip.setAttribute('aria-hidden', 'true');
   document.body.append(tip);
   let hovered = null;
-  const onContent = el => el.closest('a,button,input,select,textarea,label,summary,dialog,.glass,p,h1,h2,h3,li,header,footer');
+  const onContent = el => el.closest('a,button,input,select,textarea,label,summary,dialog,.glass,.tree,p,h1,h2,h3,li,header,footer');
   const pick = e => {
     mouse.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
     ray.setFromCamera(mouse, camera);

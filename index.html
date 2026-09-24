@@ -154,18 +154,39 @@
       </script>
     </section>
 
-    <section class="section" aria-labelledby="cta">
-      <div class="wrap">
-        <div class="glass reveal" style="text-align:center">
-          <span class="eyebrow">Get involved</span>
-          <h2 id="cta" class="display" style="font-size:clamp(2.2rem,5vw,4.4rem)">Partner with us</h2>
-          <p class="lead" style="margin:0 auto">Implement a programme in your community, fund an initiative, or volunteer with us. We welcome NGOs, government bodies, CSR teams, and donors.</p>
-          <div class="actions" style="justify-content:center">
+    <!-- Tree of Hope: grows when scrolled into view (js/tree-of-hope.js). Solid backdrop keeps the background orbs out of it. -->
+    <section class="tree-section" aria-labelledby="cta">
+      <div class="wrap tree-grid">
+        <div class="tree-copy reveal">
+          <span class="eyebrow">Tree of Hope</span>
+          <h2 id="cta" class="display" style="font-size:clamp(2.4rem,5.4vw,5rem)">Help hope grow</h2>
+          <p class="lead">Implement a programme in your community, fund an initiative, or volunteer with us. We welcome NGOs, government bodies, CSR teams, and donors.</p>
+          <div class="actions">
             <button class="btn btn-solid" type="button" data-donate>Donate Now</button>
             <a class="btn" href="contact.html">Get in touch</a>
           </div>
+          <p class="tree-hint">Drag the tree to turn it</p>
         </div>
+        <div class="tree" id="tree" role="img" aria-label="Animated tree with glowing leaves and golden fruit"></div>
       </div>
+      <script type="module">
+        // Mount only when the section scrolls into view, so visitors watch the tree grow.
+        const el = document.getElementById('tree');
+        const io = new IntersectionObserver(async ([e]) => {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          try {
+            const { mountTree } = await import('./js/tree-of-hope.js');
+            // Transparent over the section glow; no drag on touch screens so swiping still scrolls the page.
+            mountTree(el, { background: null, interactive: !matchMedia('(pointer: coarse)').matches });
+            el.classList.add('ready');
+          } catch { el.remove(); } // no WebGL: the call to action stands on its own
+        }, { rootMargin: '0px 0px -25% 0px' });
+        io.observe(el);
+        // While the tree is on stage, fade the background orbs so the two scenes never overlap.
+        new IntersectionObserver(([e]) => document.body.classList.toggle('tree-view', e.isIntersecting), { threshold: .2 })
+          .observe(el.closest('section'));
+      </script>
     </section>
   </main>
 </body>

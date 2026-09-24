@@ -2,7 +2,7 @@
 // re-stack (bottom to top, with a small glitch jolt) whenever its shape/colours change.
 // Used by the home-page chapters (js/chapters.js) and by page heroes (canvas.hero-sculpt).
 window.makeSculpture = async (canvas, { mobileY = .5, desktopY = .2 } = {}) => {
-  const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js');
+  const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.169.0/+esm');
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !LOW_END });
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   renderer.setPixelRatio(Math.min(devicePixelRatio, LOW_END ? 1 : 1.75));

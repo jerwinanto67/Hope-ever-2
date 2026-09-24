@@ -39,6 +39,7 @@ The footer contact details are in `js/site.js`. The contact page details are in 
 | `js/scene.js` | Background orbs and particles; the camera follows the scroll |
 | `js/sculpture.js` | Sliced 3D sculpture used in page heroes and the home chapters |
 | `js/chapters.js` | Home-page programme chapters |
+| `js/tree-of-hope.js` | Tree of Hope, the home-page finale; grows when scrolled into view while the background orbs fade out |
 | `assets/images/` | Photos and logos |
 
 ## Adding a gallery photo
