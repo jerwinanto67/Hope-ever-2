@@ -4,12 +4,12 @@ const ASSETS = 'https://hopeever.org/assets/images/';
 const W3F_KEY = '92aceb5c-0b7c-4af2-94e7-28e64e1dadab'; // Web3Forms public key for contact@hopeever.org (from the original site)
 
 const NAV = [
-  ['home', 'index.html', 'Home'],
-  ['about', 'about.html', 'About'],
-  ['projects', 'projects.html', 'Projects'],
-  ['programs', 'programs.html', 'Programs'],
-  ['gallery', 'gallery.html', 'Gallery'],
-  ['contact', 'contact.html', 'Contact'],
+  ['home', 'index.html', 'Home', 'youth_skill_development.jpeg', 'Hope for every community'],
+  ['about', 'about.html', 'About', 'Deepavali_celebration_2021_thiruvallur_district.jpeg', 'Who we are since 2012'],
+  ['projects', 'projects.html', 'Projects', 'Agaramthen_millet_training_chengalpattu.jpeg', 'Work on the ground'],
+  ['programs', 'programs.html', 'Programs', 'WASH_project_2025_with_cecowar.jpeg', 'Five areas of change'],
+  ['gallery', 'gallery.html', 'Gallery', 'NIFT_Tharamani_hand_embroidary_team.jpeg', 'Our field stories'],
+  ['contact', 'contact.html', 'Contact', 'Donation_for_welfare_Covid.jpeg', 'Partner, volunteer, give'],
 ];
 
 // Same fields as the original contact form, so Web3Forms submissions keep their shape.
@@ -43,7 +43,7 @@ function injectChrome() {
     </nav>
     <div class="head-actions">
       <button class="btn btn-solid" type="button" data-donate>Donate</button>
-      <button class="btn menu-btn" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+      <button class="btn menu-btn" type="button" aria-haspopup="dialog" aria-controls="menu" aria-label="Open menu">
         <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect y="4.75" width="20" height="1.5" fill="currentColor"/><rect y="9.25" width="20" height="1.5" fill="currentColor"/><rect y="13.75" width="20" height="1.5" fill="currentColor"/></svg>
       </button>
     </div>
@@ -84,6 +84,24 @@ function injectChrome() {
 
   <button class="btn audio-btn" type="button" aria-pressed="false"><span class="audio-dot"></span>Audio</button>
 
+  <dialog id="menu" class="menu" aria-label="Site menu">
+    <div class="menu-top">
+      <a class="brand" href="index.html"><img src="${ASSETS}common/circular_logo-removebg-preview.png" alt="" width="42" height="42"><span>Hope Ever<br>Foundation</span></a>
+      <form method="dialog"><button class="btn menu-close" aria-label="Close menu">&times;</button></form>
+    </div>
+    <div class="menu-rail">
+      ${NAV.map(([k, h, t, img, line], i) => `
+      <a class="menu-card" href="${h}"${k === page ? ' aria-current="page"' : ''}>
+        <span class="mc-poster"><img src="${ASSETS}gallery/${img}" alt="" loading="lazy"><span class="mc-num">0${i + 1}</span><span class="mc-title">${t}</span></span>
+        <span class="mc-line">${line}</span>
+      </a>`).join('')}
+    </div>
+    <div class="menu-bottom">
+      <span class="muted">Scroll, drag or use &larr; &rarr;</span>
+      <button class="btn btn-solid" type="button" data-donate>Donate</button>
+    </div>
+  </dialog>
+
   <dialog id="donate" aria-labelledby="donate-title">
     <form method="dialog"><button class="btn x" aria-label="Close">&times;</button></form>
     <span class="eyebrow">Support our work</span>
@@ -95,17 +113,90 @@ function injectChrome() {
 
 function initNav() {
   const header = document.querySelector('.site-header');
-  const btn = document.querySelector('.menu-btn');
-  const setOpen = open => {
-    document.body.classList.toggle('menu-open', open);
-    btn.setAttribute('aria-expanded', open);
-  };
-  btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
-  document.getElementById('nav').addEventListener('click', e => e.target.closest('a') && setOpen(false));
-  addEventListener('keydown', e => e.key === 'Escape' && setOpen(false));
   const onScroll = () => header.classList.toggle('scrolled', scrollY > 40);
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+}
+
+// Card-carousel menu: the page shrinks away, then a row of photo cards arranged in 3D
+// slides sideways with wheel / drag / arrow keys. Picking a card zooms it before navigating.
+function initMenu() {
+  const dlg = document.getElementById('menu');
+  const rail = dlg.querySelector('.menu-rail');
+  const cards = [...rail.children];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const start = Math.max(0, cards.findIndex(c => c.hasAttribute('aria-current')));
+  let pos = start, target = start, raf = 0, idle = 0, drag = null, moved = false;
+  const clamp = v => Math.min(Math.max(v, 0), cards.length - 1);
+  const snap = () => { clearTimeout(idle); idle = setTimeout(() => { target = Math.round(target); loop(); }, 140); };
+
+  const layout = () => {
+    const w = cards[0].offsetWidth + 28;
+    cards.forEach((c, i) => {
+      const o = i - pos, a = Math.abs(o);
+      c.style.transform = `translateX(${o * w}px) translateZ(${-a * 140}px) rotateY(${Math.max(-40, Math.min(40, -o * 16))}deg) translateY(${Math.min(a, 1) * 18}px)`;
+      c.style.opacity = a > 3.2 ? 0 : 1 - Math.max(0, a - 2.2);
+      c.style.zIndex = 100 - Math.round(a * 10);
+      c.classList.toggle('is-center', a < .5);
+      if (a >= .5) c.firstElementChild.style.transform = ''; // drop tilt once off-centre
+    });
+  };
+  const loop = () => {
+    cancelAnimationFrame(raf);
+    const step = () => {
+      pos += (target - pos) * (reduce ? 1 : .14);
+      if (Math.abs(target - pos) < .001) pos = target;
+      layout();
+      if (pos !== target) raf = requestAnimationFrame(step);
+    };
+    step();
+  };
+  const go = t => { target = clamp(t); loop(); };
+
+  const open = () => {
+    // Shrink the live page toward the viewport centre, then bring in the menu.
+    const main = document.querySelector('main');
+    document.body.style.setProperty('--zoom-origin', `50% ${scrollY - main.offsetTop + innerHeight / 2}px`);
+    document.body.classList.add('menu-zoom');
+    pos = target = start;
+    setTimeout(() => { dlg.showModal(); layout(); cards[start].focus({ preventScroll: true }); }, reduce ? 0 : 380);
+  };
+  document.querySelector('.menu-btn').addEventListener('click', open);
+  dlg.addEventListener('close', () => { document.body.classList.remove('menu-zoom'); dlg.classList.remove('leaving'); });
+
+  dlg.addEventListener('wheel', e => { e.preventDefault(); target = clamp(target + (e.deltaY + e.deltaX) / 420); loop(); snap(); }, { passive: false });
+  dlg.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { go(Math.round(target) + 1); cards[Math.round(target)].focus({ preventScroll: true }); }
+    if (e.key === 'ArrowLeft') { go(Math.round(target) - 1); cards[Math.round(target)].focus({ preventScroll: true }); }
+  });
+  cards.forEach((c, i) => c.addEventListener('focus', () => go(i)));
+
+  rail.addEventListener('pointerdown', e => { drag = { x: e.clientX, t: target }; moved = false; });
+  addEventListener('pointermove', e => {
+    // Drag slides the rail; otherwise the centre card tilts toward the pointer.
+    if (drag) {
+      const dx = e.clientX - drag.x;
+      if (Math.abs(dx) > 6) moved = true;
+      target = clamp(drag.t - dx / (cards[0].offsetWidth + 28)); loop();
+    } else if (dlg.open && !reduce) {
+      const c = rail.querySelector('.is-center .mc-poster');
+      if (c) c.style.transform = `rotateY(${(e.clientX / innerWidth - .5) * 16}deg) rotateX(${-(e.clientY / innerHeight - .5) * 12}deg)`;
+    }
+  }, { passive: true });
+  addEventListener('pointerup', () => { if (drag) { drag = null; target = Math.round(target); loop(); } });
+
+  rail.addEventListener('click', e => {
+    const card = e.target.closest('.menu-card');
+    if (!card) return;
+    e.preventDefault();
+    if (moved) return;
+    const i = cards.indexOf(card);
+    if (Math.round(pos) !== i) return go(i); // side card: bring it to the centre first
+    if (card.hasAttribute('aria-current')) return dlg.close();
+    card.classList.add('go');
+    dlg.classList.add('leaving');
+    setTimeout(() => { location.href = card.href; }, reduce ? 0 : 520);
+  });
 }
 
 function initDonate() {
@@ -231,6 +322,7 @@ function initAudio() {
 
 injectChrome();
 initNav();
+initMenu();
 initDonate();
 initForms();
 initReveal();
