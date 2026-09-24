@@ -188,6 +188,7 @@ details ul { margin: 1rem 0 0; padding-left: 1.2rem; color: var(--muted); }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 .marquee a { flex: none; width: 140px; height: 90px; display: grid; place-items: center; background: rgba(255, 255, 255, .92); border-radius: var(--radius); padding: 12px; }
 .marquee img { max-height: 64px; object-fit: contain; }
+.logo-text { color: #0b2a20; font: 700 .85rem/1.2 var(--body); text-align: center; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
 /* ---------- Gallery ---------- */

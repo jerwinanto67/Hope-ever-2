@@ -1,6 +1,6 @@
 // Shared chrome (header, footer, donate dialog, audio) + page behaviours.
 // Injected from one place so the 7 pages don't each carry a copy of the nav/footer.
-const ASSETS = 'https://hopeever.org/assets/images/';
+const ASSETS = 'assets/images/';
 const W3F_KEY = '92aceb5c-0b7c-4af2-94e7-28e64e1dadab'; // Web3Forms public key for contact@hopeever.org (from the original site)
 
 const NAV = [
