@@ -32,6 +32,8 @@ The footer contact details are in `js/site.js`. The contact page details are in 
 | Path | Contents |
 |---|---|
 | `index.html` … `contact.html`, `404.html` | Pages |
+| `projects/*.html` | Project detail pages (linked from each project card's "Read more") |
+| `docs/` | Certificates and policy PDFs |
 | `css/site.css` | All styles |
 | `js/site.js` | Header, footer, card menu and donate pop-up (added to every page), forms, filters, lightbox, audio |
 | `js/scene.js` | Background orbs and particles; the camera follows the scroll |
@@ -55,5 +57,5 @@ The footer contact details are in `js/site.js`. The contact page details are in 
 ## To do
 
 - Real phone number and Instagram handle (contact page and footer)
-- Project "Read more" links and the certificate/policy PDFs still point to hopeever.org; they
-  will break if this site replaces hopeever.org
+- Income Tax 10AB approval order: the PDF is missing on hopeever.org too, so the About page offers
+  "Request a copy". Add the file to `docs/` and link it from the certificate card in `about.html`.

@@ -87,7 +87,7 @@ function injectChrome() {
       </div>
       <div class="footer-bottom">
         <span>&copy; ${new Date().getFullYear()} Hope Ever Foundation. All rights reserved.</span>
-        <span><a href="https://hopeever.org/docs/terms-and-conditions.pdf" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a> · <a href="https://hopeever.org/docs/privacy-policy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a></span>
+        <span><a href="${BASE}docs/terms-and-conditions.pdf" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a> · <a href="${BASE}docs/privacy-policy.pdf" target="_blank" rel="noopener noreferrer">Privacy Policy</a></span>
       </div>
     </div>
   </footer>
